@@ -10,7 +10,10 @@
             <Button text="-" backgroundColor="#1c6b48" @tap="onButtonTap('-', 1)" col="2" row="0" />
             <Label :text="total1" col="1" color="white" fontSize="36" textAlignment="center" />
 
-            <Label col="4" />
+            <GridLayout columns="*" rows="50" col="3" width="200">
+              <Button text="Novo Jogo" col="0" row="0" @tap="resetGame" />
+            </GridLayout>
+            <!-- <Label col="4" text="aa" /> -->
 
             <Label :text="total2" col="5" color="white" fontSize="36" textAlignment="center" />
             <Button text="+" backgroundColor="#43b883" @tap="onButtonTap('+', 2)" col="6" row="0" />
@@ -18,14 +21,55 @@
           </GridLayout>
         </FlexboxLayout>
         <FlexboxLayout flexDirection="column">
-          <GridLayout columns="50, 150, 50" rows="50, 50, 50, 50">
-            <Label text="1" :backgroundColor="colorServe[0]" col="0" row="1" />
-            <Label text="2" :backgroundColor="colorServe[1]" col="0" row="2" />
-            
-            <Label col="1" backgroundColor="black" rowSpan="2" row="1" />
+          <GridLayout columns="100%, *, 100%" width="90%" rows="50, 75, 75, 50" alignSelf="center">
 
-            <Label text="3" :backgroundColor="colorServe[2]" col="2" row="1" />
-            <Label text="4" :backgroundColor="colorServe[3]" col="2" row="2" />
+            <GridLayout col="1" row="1" columns="*, *" width="100%" rows="*" alignSelf="center">
+              <Button text="Server 1" @tap="setServer(0)" backgroundColor="#0059A4" borderColor="#fff" borderWidth="2" col="0" row="0" />
+              <Button text="Server 3" @tap="setServer(2)" backgroundColor="#0059A4" borderColor="#fff" borderWidth="2" col="1" row="0" />
+            </GridLayout>
+
+            <GridLayout col="1" row="2" columns="*, *" width="100%" rows="*" alignSelf="center">
+              <Button text="Server 2" @tap="setServer(1)" backgroundColor="#0059A4" borderColor="#fff" borderWidth="2" col="0" row="0" />
+              <Button text="Server 4" @tap="setServer(3)" backgroundColor="#0059A4" borderColor="#fff" borderWidth="2" col="1" row="0" />
+            </GridLayout>
+
+            <Image
+              stretch="aspectFit"
+              height="40"
+              src="~/assets/images/raquete.png"
+              :visibility="stateServe[0]"
+              col="0"
+              row="1"
+              marginRight="5"
+            />
+            <Image
+              stretch="aspectFit"
+              height="40"
+              src="~/assets/images/raquete.png"
+              :visibility="stateServe[1]"
+              col="0"
+              row="2"
+              marginRight="5"
+            />
+
+            <Image
+              stretch="aspectFit"
+              height="40"
+              src="~/assets/images/raquete.png"
+              :visibility="stateServe[2]"
+              col="2"
+              row="1"
+              marginLeft="5"
+            />
+            <Image
+              stretch="aspectFit"
+              height="40"
+              src="~/assets/images/raquete.png"
+              :visibility="stateServe[3]"
+              col="2"
+              row="2"
+              marginLeft="5"
+            />
           </GridLayout>
         </FlexboxLayout>
       </StackLayout>
@@ -40,33 +84,40 @@ export default {
       total1: 0,
       total2: 0,
       sumOfPoints: 0,
-      colorServe: ["#ddd", "#ddd", "#ddd", "#43b883"],
-      server: 3
+      stateServe: ["hidden", "hidden", "hidden", "visible"],
+      server: 3,
+      firstToServe: 3,
+      orderOfServe: {
+        0: [3, 1, 2, 0],
+        1: [2, 0, 3, 1],
+        2: [1, 3, 0, 2],
+        3: [0, 2, 1, 3]
+      }
     };
   },
   watch: {
     sumOfPoints: function() {
+      
       if (this.sumOfPoints % 2 == 0) {
-        if (this.server == 3) {
-          this.server = 0;
-        } else if (this.server == 0) {
-          this.server = 2;
-        } else if(this.server == 2){
-          this.server = 1;
+        let order = this.orderOfServe[this.firstToServe].indexOf(this.server);
+        let n = order+1;
+        let next =  this.orderOfServe[this.firstToServe][n];
+
+        if (typeof this.orderOfServe[this.firstToServe][next] == "undefined") {
+          this.server = this.orderOfServe[this.firstToServe][0];
         } else {
-          this.server = 3;
+          this.server = next;
         }
       }
     },
     server: function() {
-      this.colorServe = ["#ddd", "#ddd", "#ddd", "#ddd"];
-      
+      this.stateServe = ["hidden", "hidden", "hidden", "hidden"];
+
       for (let i = 0; i <= 3; i++) {
         if (this.server == i) {
-          this.colorServe[i] = "#43b883";
+          this.stateServe[i] = "visible";
         }
       }
-      
     }
   },
   methods: {
@@ -88,6 +139,18 @@ export default {
           this.sumOfPoints++;
         }
       }
+    },
+    resetGame: function() {
+      this.total1 = 0;
+      this.total2 = 0;
+      this.sumOfPoints = 0;
+    },
+    setServer: function (serverPosition) {
+      this.server = serverPosition;
+      
+      if (this.sumOfPoints == 0) {
+        this.firstToServe = serverPosition;
+      }
     }
   }
 };
@@ -99,16 +162,4 @@ ActionBar {
   color: #ffffff;
 }
 
-.message {
-  vertical-align: center;
-  text-align: center;
-  font-size: 20;
-  color: #333333;
-}
-.alignRight {
-  text-align: right;
-}
-.colorWhite {
-  color: #fff;
-}
 </style>
