@@ -1,36 +1,36 @@
 <template>
   <Page>
-    <ActionBar title="Welcome to NativeScript-Vue!" />
+    <ActionBar title="Table Tenis Scoreboard" backgroundColor="#3498db" />
 
     <ScrollView orientation="vertical">
-      <StackLayout backgroundColor="#3c495e">
+      <StackLayout backgroundColor="#34495e">
         <FlexboxLayout flexDirection="column">
           <GridLayout columns="50, 50, 50, *, 50, 50, 50" rows="auto">
             <Button text="+" backgroundColor="#43b883" @tap="onButtonTap('+', 1)" col="0" row="0" />
-            <Button text="-" backgroundColor="#1c6b48" @tap="onButtonTap('-', 1)" col="2" row="0" />
+            <Button text="-" backgroundColor="#3498db" @tap="onButtonTap('-', 1)" col="2" row="0" />
             <Label :text="total1" col="1" color="white" fontSize="36" textAlignment="center" />
 
             <GridLayout columns="*" rows="50" col="3" width="200">
-              <Button text="Novo Jogo" col="0" row="0" @tap="resetGame" />
+              <Button text="Novo Jogo" col="0" row="0" @tap="resetGame" backgroundColor="#ecf0f1" />
             </GridLayout>
             <!-- <Label col="4" text="aa" /> -->
 
             <Label :text="total2" col="5" color="white" fontSize="36" textAlignment="center" />
             <Button text="+" backgroundColor="#43b883" @tap="onButtonTap('+', 2)" col="6" row="0" />
-            <Button text="-" backgroundColor="#1c6b48" @tap="onButtonTap('-', 3)" col="4" row="0" />
+            <Button text="-" backgroundColor="#3498db" @tap="onButtonTap('-', 3)" col="4" row="0" />
           </GridLayout>
         </FlexboxLayout>
         <FlexboxLayout flexDirection="column">
           <GridLayout columns="100%, *, 100%" width="90%" rows="50, 75, 75, 50" alignSelf="center">
 
             <GridLayout col="1" row="1" columns="*, *" width="100%" rows="*" alignSelf="center">
-              <Button text="Server 1" @tap="setServer(0)" backgroundColor="#0059A4" borderColor="#fff" borderWidth="2" col="0" row="0" />
-              <Button text="Server 3" @tap="setServer(2)" backgroundColor="#0059A4" borderColor="#fff" borderWidth="2" col="1" row="0" />
+              <Button text="Jogador 1" color="#ecf0f1" @tap="setServer(0)" backgroundColor="#0059A4" borderColor="#ecf0f1" borderWidth="2" col="0" row="0" />
+              <Button text="Jogador 3" color="#ecf0f1" @tap="setServer(2)" backgroundColor="#0059A4" borderColor="#ecf0f1" borderWidth="2" col="1" row="0" />
             </GridLayout>
 
             <GridLayout col="1" row="2" columns="*, *" width="100%" rows="*" alignSelf="center">
-              <Button text="Server 2" @tap="setServer(1)" backgroundColor="#0059A4" borderColor="#fff" borderWidth="2" col="0" row="0" />
-              <Button text="Server 4" @tap="setServer(3)" backgroundColor="#0059A4" borderColor="#fff" borderWidth="2" col="1" row="0" />
+              <Button text="Jogador 2" color="#ecf0f1" @tap="setServer(1)" backgroundColor="#0059A4" borderColor="#ecf0f1" borderWidth="2" col="0" row="0" />
+              <Button text="Jogador 4" color="#ecf0f1" @tap="setServer(3)" backgroundColor="#0059A4" borderColor="#ecf0f1" borderWidth="2" col="1" row="0" />
             </GridLayout>
 
             <Image
@@ -97,8 +97,12 @@ export default {
   },
   watch: {
     sumOfPoints: function() {
-      
-      if (this.sumOfPoints % 2 == 0) {
+      let numberOfServes = 2;
+      if (this.total1 >= 10 && this.total2 >= 10) {
+        numberOfServes = 1;
+      }
+
+      if (this.sumOfPoints % numberOfServes == 0) {
         let order = this.orderOfServe[this.firstToServe].indexOf(this.server);
         let n = order+1;
         let next =  this.orderOfServe[this.firstToServe][n];
@@ -158,8 +162,14 @@ export default {
 
 <style scoped>
 ActionBar {
-  background-color: #53ba82;
+  background-color: #3498db;
   color: #ffffff;
+}
+.color1 {
+  color: #ecf0f1;
+}
+.border-color1{
+  border-color: #ecf0f1
 }
 
 </style>
